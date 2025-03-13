@@ -148,19 +148,19 @@ class GestionBicicletas:
             return False
 
         def validar_llanta(texto):
-            try:
-                if texto == "":
+            # Permitir números, puntos y cadenas vacías mientras se escribe
+            if texto == "" or texto.replace(".", "").isdigit() and texto.count(".") <= 1:
+                try:
+                    if texto and not (20 <= float(texto) <= 30):
+                        mensaje_error.configure(text="Fuera de rango (20-30 cm)")
+                    else:
+                        mensaje_error.configure(text="")
+                    return True
+                except ValueError:
                     mensaje_error.configure(text="")
                     return True
-                valor = float(texto)
-                if 20 <= valor <= 30:
-                    mensaje_error.configure(text="")
-                    return True
-                mensaje_error.configure(text="Llanta debe estar entre 20-30 cm")
-                return False
-            except ValueError:
-                mensaje_error.configure(text="Solo números decimales")
-                return False
+            mensaje_error.configure(text="Solo números o decimales")
+            return False
 
         ctk.CTkLabel(scroll_frame, text="Serial(Numero):").pack(pady=5)
         entrada_serial = ctk.CTkEntry(scroll_frame, validate="key", validatecommand=(registro_win.register(validar_serial), '%P'))
